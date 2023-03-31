@@ -1,3 +1,5 @@
+
+
 # sreamlit
 import streamlit as st
 # pandas
@@ -17,7 +19,6 @@ from requests.exceptions import ConnectionError
 # Page icon and Title 
 
 st.set_page_config(page_title="Covid-19 Data Dashboard", page_icon="🦠" , layout="wide", initial_sidebar_state="expanded")
-
 # Linked CSS File 
 
 with open('style.css') as f:
@@ -31,7 +32,7 @@ st.sidebar.image("./components/img/logo.png", width=280)
 
 @st.cache_data
 def load_config():
-    with open(".streamlit/config.toml") as f:
+    with open("config.toml") as f:
         config = toml.loads(f.read())
     return config
 
@@ -288,7 +289,7 @@ with additional:
     st.title('`COVID-19` Crutial Cases Hospitalized Cases Per Continent :')
     st.info('In this Section Will Compare the Hospitalized Patients and ICU patients For all Continents.' )
     
-    covid = pd.read_csv('./components/csv/owid-covid-data.csv')
+    covid = pd.read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv')
 
     # Create a sidebar with a radio button to select between hosp_patients and icu_patients
     with st.sidebar:
@@ -323,7 +324,7 @@ with final:
 
      # Load COVID-19 data into a Pandas DataFrame
 def load_data():
-    covid = pd.read_csv('./components/csv/owid-covid-data.csv')
+    covid = pd.read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv')
     return covid
 
 # Define the list of columns to use in the chart
@@ -399,6 +400,4 @@ st.markdown(
     
 with st.sidebar:
     st.markdown('**Made By Moad Hamousti** 👋')
-
-
 
