@@ -42,6 +42,8 @@ config = load_config()
 header = st.container()
 dataset = st.container()
 placeholder = st.container()
+additional = st.container()
+final = st.container()
 chart = st.container()
 
 
@@ -74,11 +76,11 @@ default_countries = ['United States', 'China', 'United Kingdom', 'Morocco']
 
 with header:
     st.title('`COVID-19` Data Worldwide :')
-    st.info('In this project i look into Providing the data of each country and for each Continent about `COVID-19` disease Since the start in the year 2020 , Starting With an OverView of this Phenomenon ,You can se all the data of any country Updated Constantely. Then being Specific Like talking about Deaths caused by `Covid-19` And a Specific Country (MOROCCO).' )
+    st.info('In this project i look into Providing the data of each country and for each Continent about `COVID-19` disease Since the start in the year 2020 , Starting With an OverView of this Phenomenon ,You can see all the data of any country Updated Constantely. Then being Specific Like talking about Deaths caused by `Covid-19` And a Specific Country (MOROCCO).' )
     st.text('COVID-19 Data for each Country With the Population and Total Cases and Deaths... Also Recovered Cases and Active Cases and finally Total Tests.And You can select the Country from the Selectbox in the Sidebar:')
     with st.sidebar:
         st.subheader('`COVID-19` Data Worldwide :')
-        selected_country = st.sidebar.selectbox('Select Country or Continant :', load_data()['location'].unique() ,key='country_selectbox-1')
+        selected_country = st.sidebar.selectbox('Select Country or Continent :', load_data()['location'].unique() ,key='country_selectbox-1')
 
         columns = ['iso_code','location','continent','date','total_cases','new_cases','total_deaths','new_deaths','total_cases_per_million','new_cases_per_million']
 
@@ -211,7 +213,7 @@ def filter_data(country):
 with st.sidebar:
         st.subheader('`COVID-19` Total Deaths Worldwide :')
         selected_countries = st.multiselect(
-            'Select Countries or Continants :',
+            'Select Countries or Continents :',
             df.groupby('location').count().reset_index()['location'].tolist(),
             default=default_countries
         )
@@ -219,9 +221,9 @@ with st.sidebar:
 
 with dataset:
     # Main app
-    st.title('`COVID-19` line chart Graph of **Total Deaths** for All Countries & Continants :')
-    st.info('`COVID-19` Data Of Total Cases for each Country and Continants ,To compare between Countries Or Continants :')
-    st.text('You Can Select Countries Or Continants in the SideBar :')
+    st.title('`COVID-19` line chart Graph of **Total Deaths** for All Countries & Continents :')
+    st.info('`COVID-19` Data Of Total Cases for each Country and Continents ,To compare between Countries Or Continents :')
+    st.text('You Can Select Countries Or Continents in the SideBar :')
 
     # Display a comparative graph for multiple countries
     st.subheader('`COVID-19` Total Cases Worldwide **(Compare Graph)**:')
@@ -266,10 +268,10 @@ with dataset:
 
     my_country = 'MOROCCO'
 
+with placeholder:
     st.write('## `COVID-19` Data for : ', '<span style="color:#e64c2c">'+ my_country + '</span>', unsafe_allow_html=True)
     st.info('The `COVID-19` Of (MOROCCO) Contains Total Cases , Total Deaths and finally New Cases:')
     st.text('You Can Choose Any Option From The Menu in the Sidebar To be Displayed.')
-with st.container():
     # Filter data for Morocco
     df = df[df['location'] == 'Morocco']
 
@@ -278,6 +280,85 @@ with st.container():
 
     # Display the chart
     st.altair_chart(chart)
+
+
+
+
+with additional:
+    st.title('`COVID-19` Crutial Cases Hospitalized Cases Per Continent :')
+    st.info('In this Section Will Compare the Hospitalized Patients and ICU patients For all Continents.' )
+    
+    covid = pd.read_csv('./components/csv/owid-covid-data.csv')
+
+    # Create a sidebar with a radio button to select between hosp_patients and icu_patients
+    with st.sidebar:
+        st.subheader('`COVID-19` Crucial Cases :')
+    option = st.sidebar.radio('Select patients type :', ('hosp_patients', 'icu_patients'))
+
+    # Filter data for the latest date
+    latest_date = covid['date'].max()
+    covid_latest = covid[covid['date'] == latest_date]
+
+    # Create a mark point chart based on the selected option
+    if option == 'hosp_patients':
+        chart = alt.Chart(covid).mark_point().encode(
+            alt.X('date:T', title='Date', axis=alt.Axis(format='%b %d, %Y')),
+            y='hosp_patients',
+            color='continent'
+        ).interactive()
+    elif option == 'icu_patients':
+        chart = alt.Chart(covid).mark_point().encode(
+            alt.X('date:T', title='Date', axis=alt.Axis(format='%b %d, %Y')),
+            y='icu_patients',
+            color='continent'
+        ).interactive()
+
+    # Display the chart using Streamlit
+    st.altair_chart(chart, use_container_width=True)
+
+
+with final:
+     st.title('`COVID-19` Vaccinating Data Per Country and Continent :')
+     st.info('In this Section we see the vaccination Status Worldwide From : Fully Vaccinated People to Partly Vaccinated ones, Total Boosters and All the vaccinated People Generally' )
+
+     # Load COVID-19 data into a Pandas DataFrame
+def load_data():
+    covid = pd.read_csv('./components/csv/owid-covid-data.csv')
+    return covid
+
+# Define the list of columns to use in the chart
+cols = ['location', 'people_vaccinated', 'people_fully_vaccinated', 'total_boosters', 'total_vaccinations']
+
+# Melt the data to create a long format
+covid_melt = pd.melt(load_data()[cols], id_vars='location', var_name='category', value_name='value')
+
+# Create the donut chart
+chart = alt.Chart(covid_melt).mark_arc(innerRadius=50).encode(
+    theta=alt.Theta(field="value", type="quantitative"),
+    color=alt.Color(field="category", type="nominal"),
+    tooltip=['location', 'category', 'value']
+).properties(
+    width=600,
+    height=400
+)
+
+# Select box for country/continent
+selected_country = st.selectbox('Select Country or Continent:', load_data()['location'].unique(), key='country_selectbox-3')
+
+# Filter the data by selected country/continent
+filtered_data = covid_melt[covid_melt['location'] == selected_country]
+
+# Display the chart for the selected country/continent
+st.altair_chart(chart.transform_filter(
+    alt.datum.location == selected_country
+))
+
+
+
+
+
+
+
 
 
 st.title('General Tips To Protect Yourself From `Covid-19` :')
@@ -301,6 +382,8 @@ with st.expander('Covid 19 Prevention Tips'):
                     st.markdown(
                         f"""</br> Reference for Tips : <a href="https://internationalmedicalcorps.org/emergency-response/covid-19/coronavirus-prevention-tips/">IMC</a>""",
                         unsafe_allow_html=True)
+                    
+
 
 
 st.markdown(
@@ -316,10 +399,6 @@ st.markdown(
     
 with st.sidebar:
     st.markdown('**Made By Moad Hamousti** 👋')
-
-
-
-
 
 
 
