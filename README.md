@@ -1,4 +1,4 @@
-### Covid-Dashboard-WorldWide 🌎 (live Update) 🦠 📈 
+### Covid-Dashboard-WorldWide 🌎 (live Update) 🦠 📈 :
 
 ![1](https://github.com/moadhamousti/Covid-Dashboard/assets/118165767/7a4b9222-339c-4d7e-b187-adcf26848ec5)
 
