@@ -10,7 +10,6 @@
 
 ☑️ - Map For Each Country and Informations About it.
 
-
 ### Screen Shoots 📷 :
 
 
