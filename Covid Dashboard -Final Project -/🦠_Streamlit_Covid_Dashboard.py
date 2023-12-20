@@ -1,4 +1,4 @@
-# sreamlit 
+# sreamlit  
 import streamlit as st
 # pandas
 import pandas as pd
