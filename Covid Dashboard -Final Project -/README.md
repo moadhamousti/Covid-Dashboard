@@ -1,4 +1,4 @@
-# Python-Streamlit-Covid-19-Dashboard
+# Python-Streamlit-Covid-19-Dashboard 
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/ronald55/python-streamlit-covid-19-dashboard/main/main.py)
 
