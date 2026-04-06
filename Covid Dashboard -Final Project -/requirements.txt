@@ -1,0 +1,6 @@
+streamlit
+pandas
+toml
+altair
+pydeck
+requests
